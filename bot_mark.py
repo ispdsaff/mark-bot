@@ -30,21 +30,21 @@ def main():
     # ⚙️ Создание Telegram-приложения
     application = Application.builder().token(BOT_TOKEN).build()
 
-# === Хендлеры команд ===
-application.add_handler(CommandHandler("start", start.start_handler))
+    # 🧩 Регистрация хендлеров
+    application.add_handler(CommandHandler("start", start.start_handler))
+    application.add_handler(CallbackQueryHandler(start.callback_handler, pattern="^start_interaction$|^market_"))
+    application.add_handler(CallbackQueryHandler(menu.menu_handler, pattern="^menu_"))
 
-# === Callback-хендлеры ===
-application.add_handler(CallbackQueryHandler(start.callback_handler, pattern="^start_interaction$|^market_"))
-application.add_handler(CallbackQueryHandler(menu.menu_handler, pattern="^menu_"))
-application.add_handler(CallbackQueryHandler(generation.generation_handler, pattern="^gen_"))
-application.add_handler(CallbackQueryHandler(review.review_handler, pattern="^review_"))
+    # ✍️ Генерация названий и описаний
+    application.add_handler(CallbackQueryHandler(generation.generation_handler, pattern="^gen_"))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r"^.{10,}"), generation.text_input_handler))
 
-# === Обработка текстового ввода ===
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generation.text_input_handler))
-application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, review.text_input_handler))
+    # 💬 Ответ на отзывы
+    application.add_handler(CallbackQueryHandler(review.review_handler, pattern="^review_"))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex(r"^.{10,}"), review.text_input_handler))
 
-# === Фолбэк (всё остальное) ===
-application.add_handler(MessageHandler(filters.ALL, fallback.fallback_handler))
+    # 🛑 Ошибки и нестандартные ситуации
+    application.add_handler(MessageHandler(filters.ALL, fallback.fallback_handler))
 
     # 🌐 Вебхук запуск
     application.run_webhook(
