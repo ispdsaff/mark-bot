@@ -46,12 +46,7 @@ def main():
     # 🛑 Ошибки и нестандартные ситуации
     application.add_handler(MessageHandler(filters.ALL, fallback.fallback_handler))
 
-    # 🌐 Вебхук запуск
-    application.run_webhook(
-    listen="0.0.0.0",
-    port=PORT,
-    webhook_url=f"https://{RENDER_SERVICE_NAME}.onrender.com/{BOT_TOKEN}"
-)
+    application.run_polling()
 
 
 if __name__ == "__main__":
