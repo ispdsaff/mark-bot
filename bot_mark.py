@@ -50,7 +50,8 @@ def main():
     application.run_webhook(
     listen="0.0.0.0",
     port=PORT,
-    webhook_url=f"https://{RENDER_SERVICE_NAME}.onrender.com/{BOT_TOKEN}"
+    webhook_url=f"https://{RENDER_SERVICE_NAME}.onrender.com/{BOT_TOKEN}",
+    path=f"/{BOT_TOKEN}"
 )
 
 
